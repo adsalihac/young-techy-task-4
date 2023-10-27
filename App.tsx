@@ -11,6 +11,8 @@ import React from "react";
 export default function App() {
   const [selectedCalender, setSelectedCalender] = React.useState(0);
 
+  const calenderRef = React.useRef<FlatList>(null);
+
   const [calender, setCalender] = React.useState([
     {
       day: "Monday",
@@ -73,8 +75,6 @@ export default function App() {
     },
   ]);
 
-
-
   return (
     <View style={styles.container}>
       <View
@@ -100,12 +100,16 @@ export default function App() {
           data={calender}
           showsHorizontalScrollIndicator={false}
           horizontal={true}
+          ref={calenderRef}
           contentContainerStyle={{
             paddingHorizontal: 20,
           }}
           renderItem={({ item, index }) => (
             <TouchableOpacity
-              onPress={() => setSelectedCalender(index)}
+              onPress={() => {
+                setSelectedCalender(index);
+                calenderRef.current?.scrollToIndex({index})
+              }}
               style={{
                 height: 80,
                 width: 70,
@@ -140,20 +144,24 @@ export default function App() {
           )}
         />
       </View>
-      <View style={{
-        marginTop: 20,
-      }}>
+      <View
+        style={{
+          marginTop: 20,
+        }}
+      >
         <FlatList
           data={activities}
           contentContainerStyle={{
             paddingHorizontal: 20,
           }}
           ListEmptyComponent={
-            <View style={{
-              flex:1,
-              justifyContent:"center",
-              alignItems:"center"
-            }}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Text>No Activities</Text>
             </View>
           }
@@ -171,26 +179,34 @@ export default function App() {
                 paddingHorizontal: 20,
               }}
             >
-              <Text style={{
-                fontSize: 17,
-                fontWeight: "bold",
-              }}>{item.title}</Text>
-              <Text style={{
-                fontSize: 12,
-                fontWeight: "bold",
-              }}>{item.time}</Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  fontWeight: "bold",
+                }}
+              >
+                {item.title}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "bold",
+                }}
+              >
+                {item.time}
+              </Text>
             </View>
           )}
           ListHeaderComponent={
             <View>
               <Text>Header</Text>
             </View>
-           }
-         ListFooterComponent={
-          <View>
-            <Text>Footer</Text>
-          </View>
-         }
+          }
+          ListFooterComponent={
+            <View>
+              <Text>Footer</Text>
+            </View>
+          }
         />
       </View>
     </View>
